@@ -1,0 +1,40 @@
+
+# Archivos temporales de Python
+__pycache__/
+*.py[cod]
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+
+# Configuraciones privadas
+.env
+.env.*
+!.env.example
+
+# Bases de datos con información privada
+*.db
+*.sqlite
+*.sqlite3
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Configuración de editores
+.vscode/
+.idea/
+
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+mi-entorno/
+
+# Configuraciones privadas
+.env
+.env.*
+!.env.example

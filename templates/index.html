@@ -1,0 +1,326 @@
+
+{% extends "base.html" %}
+
+{% block title %}Panel principal | NutriFit{% endblock %}
+
+{% block content %}
+
+<!-- ================================= -->
+<!-- ENCABEZADO DEL DASHBOARD -->
+<!-- ================================= -->
+
+<div class="page-header">
+
+    <div>
+
+        <h1>Panel principal</h1>
+
+        <p>
+            Bienvenido a NutriFit.
+            Aquí tienes el resumen de tu consultorio.
+        </p>
+
+    </div>
+
+    <div>
+
+        <a href="{{ url_for('nuevo_paciente') }}" class="btn">
+            + Nuevo paciente
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- TARJETAS DE ESTADÍSTICAS -->
+<!-- ================================= -->
+
+<div class="cards-container">
+
+    <!-- TOTAL PACIENTES -->
+
+    <div class="card">
+
+        <div class="card-icon">
+            👥
+        </div>
+
+        <h3>Total de pacientes</h3>
+
+        <h2>{{ total_pacientes }}</h2>
+
+        <p style="font-size: 11px; color: #75847A; margin-top: 8px;">
+            Pacientes registrados en tu consultorio
+        </p>
+
+    </div>
+
+
+    <!-- TOTAL CITAS -->
+
+    <div class="card">
+
+        <div class="card-icon">
+            📅
+        </div>
+
+        <h3>Citas pendientes de fecha</h3>
+
+        <h2>{{ total_citas }}</h2>
+
+        <p style="font-size: 11px; color: #75847A; margin-top: 8px;">
+            Citas programadas desde hoy
+        </p>
+
+    </div>
+
+
+    <!-- BIENVENIDA -->
+
+    <div class="card">
+
+        <div class="card-icon">
+            🥑
+        </div>
+
+        <h3>Tu espacio NutriFit</h3>
+
+        <h2 style="font-size: 21px;">
+            ¡Vamos bien!
+        </h2>
+
+        <p style="font-size: 11px; color: #75847A; margin-top: 8px;">
+            Organiza y mejora la atención de tus pacientes.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- ACCESOS RÁPIDOS -->
+<!-- ================================= -->
+
+<div class="page-header">
+
+    <div>
+
+        <h2 style="font-size: 18px; color: #153D30;">
+            Accesos rápidos
+        </h2>
+
+        <p>
+            Administra las funciones principales de tu consultorio.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="cards-container">
+
+    <!-- PACIENTES -->
+
+    <div class="card">
+
+        <div class="card-icon">
+            👤
+        </div>
+
+        <h3>Administrar pacientes</h3>
+
+        <p style="font-size: 12px; color: #75847A; margin: 12px 0 18px;">
+            Registra, consulta y actualiza la información de tus pacientes.
+        </p>
+
+        <a href="{{ url_for('lista_pacientes') }}" class="btn">
+            Ver pacientes
+        </a>
+
+    </div>
+
+
+    <!-- CITAS -->
+
+    <div class="card">
+
+        <div class="card-icon">
+            📆
+        </div>
+
+        <h3>Administrar citas</h3>
+
+        <p style="font-size: 12px; color: #75847A; margin: 12px 0 18px;">
+            Programa nuevas consultas y organiza tus horarios.
+        </p>
+
+        <a href="{{ url_for('citas_pagina') }}" class="btn">
+            Ver citas
+        </a>
+
+    </div>
+
+
+    <!-- NUEVO PACIENTE -->
+
+    <div class="card">
+
+        <div class="card-icon">
+            ➕
+        </div>
+
+        <h3>Registrar paciente</h3>
+
+        <p style="font-size: 12px; color: #75847A; margin: 12px 0 18px;">
+            Agrega un nuevo paciente a tu consultorio.
+        </p>
+
+        <a href="{{ url_for('nuevo_paciente') }}" class="btn">
+            Registrar ahora
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- PRÓXIMAS CITAS -->
+<!-- ================================= -->
+
+<div class="page-header">
+
+    <div>
+
+        <h2 style="font-size: 18px; color: #153D30;">
+            Próximas consultas
+        </h2>
+
+        <p>
+            Estas son tus próximas cinco citas programadas.
+        </p>
+
+    </div>
+
+    <a href="{{ url_for('citas_pagina') }}" class="btn btn-secondary">
+        Ver todas las citas
+    </a>
+
+</div>
+
+
+<div class="table-container">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Paciente</th>
+
+                <th>Fecha</th>
+
+                <th>Hora</th>
+
+                <th>Motivo</th>
+
+                <th>Estado</th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            {% for cita in proximas %}
+
+            <tr>
+
+                <td>
+                    <strong>
+                        {{ cita.paciente_nombre }}
+                    </strong>
+                </td>
+
+                <td>
+                    {{ cita.fecha }}
+                </td>
+
+                <td>
+                    {{ cita.hora }}
+                </td>
+
+                <td>
+                    {{ cita.motivo or "Consulta nutricional" }}
+                </td>
+
+                <td>
+
+                    <span class="badge badge-success">
+                        {{ cita.estado }}
+                    </span>
+
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+
+                <td colspan="5" style="text-align: center; padding: 35px;">
+
+                    <div style="font-size: 30px; margin-bottom: 10px;">
+                        📅
+                    </div>
+
+                    <strong>
+                        No tienes citas próximas.
+                    </strong>
+
+                    <p style="color: #75847A; margin-top: 8px;">
+                        Cuando registres una cita aparecerá aquí.
+                    </p>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- MENSAJE FINAL -->
+<!-- ================================= -->
+
+<div style="
+    background: #E5F3E9;
+    padding: 22px;
+    border-radius: 12px;
+    margin-top: 28px;
+">
+
+    <h3 style="color: #153D30; font-size: 15px;">
+        🥑 NutriFit: cuidando la salud de tus pacientes.
+    </h3>
+
+    <p style="color: #52705D; font-size: 12px; margin-top: 8px;">
+        Mantén organizada tu información nutricional
+        y brinda una mejor atención en cada consulta.
+    </p>
+
+</div>
+
+{% endblock %}

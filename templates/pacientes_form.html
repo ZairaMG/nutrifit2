@@ -1,0 +1,312 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+    {% if paciente %}
+        Editar paciente | NutriFit
+    {% else %}
+        Nuevo paciente | NutriFit
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+<!-- ENCABEZADO -->
+
+<div class="page-header">
+
+    <div>
+
+        <h1>
+            {% if paciente %}
+                Editar paciente
+            {% else %}
+                Registrar paciente
+            {% endif %}
+        </h1>
+
+        <p>
+            Completa la información personal y nutricional del paciente.
+        </p>
+
+    </div>
+
+    <a href="{{ url_for('lista_pacientes') }}"
+       class="btn btn-secondary">
+
+        ← Regresar
+
+    </a>
+
+</div>
+
+
+<!-- FORMULARIO -->
+
+<div class="form-container">
+
+    <form method="POST">
+
+        <!-- INFORMACIÓN PERSONAL -->
+
+        <h3 style="
+            color: #153D30;
+            font-size: 17px;
+            margin-bottom: 20px;
+        ">
+            👤 Información personal
+        </h3>
+
+
+        <div class="form-grid">
+
+            <!-- NOMBRE -->
+
+            <div class="form-group full-width">
+
+                <label for="nombre">
+                    Nombre completo *
+                </label>
+
+                <input
+                    type="text"
+                    id="nombre"
+                    name="nombre"
+                    placeholder="Nombre y apellidos"
+                    value="{{ paciente.get('nombre', '') if paciente else request.form.get('nombre', '') }}"
+                    maxlength="150"
+                    required
+                >
+
+            </div>
+
+
+            <!-- FECHA DE NACIMIENTO -->
+
+            <div class="form-group">
+
+                <label for="fecha_nacimiento">
+                    Fecha de nacimiento
+                </label>
+
+                <input
+                    type="date"
+                    id="fecha_nacimiento"
+                    name="fecha_nacimiento"
+                    value="{{ paciente.get('fecha_nacimiento', '') if paciente else request.form.get('fecha_nacimiento', '') }}"
+                >
+
+            </div>
+
+
+            <!-- SEXO -->
+
+            <div class="form-group">
+
+                <label for="sexo">
+                    Sexo
+                </label>
+
+                <select id="sexo" name="sexo">
+
+                    <option value="">
+                        Seleccionar
+                    </option>
+
+                    <option
+                        value="Femenino"
+                        {% if paciente and paciente.get('sexo') == 'Femenino' %}selected{% endif %}
+                    >
+                        Femenino
+                    </option>
+
+                    <option
+                        value="Masculino"
+                        {% if paciente and paciente.get('sexo') == 'Masculino' %}selected{% endif %}
+                    >
+                        Masculino
+                    </option>
+
+                    <option
+                        value="Otro"
+                        {% if paciente and paciente.get('sexo') == 'Otro' %}selected{% endif %}
+                    >
+                        Otro
+                    </option>
+
+                    <option
+                        value="Prefiero no decirlo"
+                        {% if paciente and paciente.get('sexo') == 'Prefiero no decirlo' %}selected{% endif %}
+                    >
+                        Prefiero no decirlo
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- TELÉFONO -->
+
+            <div class="form-group">
+
+                <label for="telefono">
+                    Teléfono
+                </label>
+
+                <input
+                    type="tel"
+                    id="telefono"
+                    name="telefono"
+                    placeholder="Número de teléfono"
+                    value="{{ paciente.get('telefono', '') if paciente else request.form.get('telefono', '') }}"
+                >
+
+            </div>
+
+
+            <!-- CORREO -->
+
+            <div class="form-group">
+
+                <label for="email">
+                    Correo electrónico
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="ejemplo@correo.com"
+                    value="{{ paciente.get('email', '') if paciente else request.form.get('email', '') }}"
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- INFORMACIÓN NUTRICIONAL -->
+
+        <div style="
+            border-top: 1px solid #E3EAE5;
+            margin: 30px 0;
+            padding-top: 25px;
+        ">
+
+            <h3 style="
+                color: #153D30;
+                font-size: 17px;
+                margin-bottom: 20px;
+            ">
+                🥑 Información nutricional
+            </h3>
+
+
+            <div class="form-grid">
+
+                <!-- OBJETIVO -->
+
+                <div class="form-group full-width">
+
+                    <label for="objetivo">
+                        Objetivo nutricional
+                    </label>
+
+                    <select id="objetivo" name="objetivo">
+
+                        <option value="">
+                            Seleccionar objetivo
+                        </option>
+
+                        {% for opcion in [
+                            'Pérdida de peso',
+                            'Aumento de masa muscular',
+                            'Mantenimiento de peso',
+                            'Mejorar hábitos alimenticios',
+                            'Nutrición deportiva',
+                            'Control nutricional',
+                            'Otro'
+                        ] %}
+
+                        <option
+                            value="{{ opcion }}"
+                            {% if paciente and paciente.get('objetivo') == opcion %}selected{% endif %}
+                        >
+                            {{ opcion }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- ALERGIAS -->
+
+                <div class="form-group full-width">
+
+                    <label for="alergias">
+                        Alergias e intolerancias alimentarias
+                    </label>
+
+                    <textarea
+                        id="alergias"
+                        name="alergias"
+                        placeholder="Describe las alergias o intolerancias del paciente..."
+                    >{{ paciente.get('alergias', '') if paciente else request.form.get('alergias', '') }}</textarea>
+
+                </div>
+
+
+                <!-- NOTAS -->
+
+                <div class="form-group full-width">
+
+                    <label for="notas">
+                        Notas adicionales
+                    </label>
+
+                    <textarea
+                        id="notas"
+                        name="notas"
+                        placeholder="Agrega observaciones importantes del paciente..."
+                    >{{ paciente.get('notas', '') if paciente else request.form.get('notas', '') }}</textarea>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- BOTONES -->
+
+        <div class="form-actions">
+
+            <button type="submit" class="btn">
+
+                {% if paciente %}
+                    Guardar cambios
+                {% else %}
+                    Registrar paciente
+                {% endif %}
+
+            </button>
+
+
+            <a
+                href="{{ url_for('lista_pacientes') }}"
+                class="btn btn-secondary"
+            >
+                Cancelar
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

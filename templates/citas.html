@@ -1,0 +1,429 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+.citas-page {
+    padding: 30px;
+    color: #173f34;
+}
+
+.citas-page .subtitulo {
+    color: #66736e;
+    margin: 8px 0 26px;
+}
+
+.citas-card {
+    background: #fff;
+    padding: 26px;
+    border-radius: 13px;
+    box-shadow: 0 3px 14px rgba(0,0,0,.06);
+    margin-bottom: 28px;
+}
+
+.citas-card h2 {
+    color: #174b39;
+    font-size: 23px;
+    margin: 0 0 22px;
+}
+
+.citas-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.citas-campo {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.citas-campo.completo {
+    grid-column: 1 / -1;
+}
+
+.citas-campo label {
+    font-weight: 600;
+    color: #37443f;
+    margin-bottom: 8px;
+}
+
+.citas-campo input,
+.citas-campo select,
+.citas-campo textarea {
+    width: 100%;
+    padding: 12px 13px;
+    border: 1px solid #d4dcd8;
+    border-radius: 8px;
+    font: inherit;
+    background: #fff;
+    color: #26352f;
+}
+
+.citas-campo input:focus,
+.citas-campo select:focus,
+.citas-campo textarea:focus {
+    outline: none;
+    border-color: #23815e;
+    box-shadow: 0 0 0 3px rgba(35,129,94,.12);
+}
+
+.citas-campo textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.citas-acciones {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 22px;
+}
+
+.btn-cita-guardar {
+    background: #176b4d;
+    color: #fff;
+    border: 0;
+    border-radius: 8px;
+    padding: 13px 22px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-cita-guardar:hover {
+    background: #105239;
+}
+
+.btn-cita-guardar:disabled {
+    background: #999;
+    cursor: not-allowed;
+}
+
+.citas-tabla-wrap {
+    overflow-x: auto;
+}
+
+table.citas-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 760px;
+    background: #fff;
+}
+
+.citas-tabla th {
+    background: #174b39;
+    color: #fff;
+    padding: 14px 12px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.citas-tabla td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #edf0ee;
+    color: #35443d;
+    vertical-align: middle;
+}
+
+.citas-vacia {
+    text-align: center;
+    color: #77827d;
+    padding: 24px !important;
+}
+
+.cita-estado {
+    display: inline-block;
+    background: #e5f4eb;
+    color: #176b4d;
+    border-radius: 20px;
+    padding: 5px 10px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.btn-cita-eliminar {
+    background: #fff0f0;
+    color: #b42318;
+    border: 1px solid #f3cccc;
+    border-radius: 6px;
+    padding: 7px 10px;
+    cursor: pointer;
+}
+
+.citas-ayuda {
+    color: #6b7771;
+    font-size: 13px;
+    margin-top: 7px;
+}
+
+@media (max-width: 750px) {
+    .citas-page {
+        padding: 18px;
+    }
+
+    .citas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .citas-campo.completo {
+        grid-column: auto;
+    }
+
+    .citas-card {
+        padding: 18px;
+    }
+}
+</style>
+
+<div class="citas-page">
+
+    <h1>🗓️ Citas y consultas</h1>
+
+    <p class="subtitulo">
+        Administra las citas de tus pacientes.
+    </p>
+
+    <!-- FORMULARIO PARA AGENDAR -->
+
+    <section class="citas-card">
+
+        <h2>➕ Agendar nueva cita</h2>
+
+        {% if not pacientes %}
+
+            <p class="citas-ayuda">
+                Todavía no tienes pacientes registrados.
+                Primero registra un paciente en el apartado
+                <strong>Nuevo paciente</strong>.
+            </p>
+
+        {% endif %}
+
+        <form method="POST"
+              action="{{ url_for('citas_pagina') }}">
+
+            <div class="citas-grid">
+
+                <div class="citas-campo">
+
+                    <label for="paciente_id">
+                        Nombre del paciente *
+                    </label>
+
+                    <select
+                        id="paciente_id"
+                        name="paciente_id"
+                        required
+                        {% if not pacientes %}disabled{% endif %}>
+
+                        <option value="">
+                            Selecciona un paciente
+                        </option>
+
+                        {% for paciente in pacientes %}
+
+                            <option value="{{ paciente._id }}">
+                                {{ paciente.nombre }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <div class="citas-campo">
+
+                    <label for="fecha">
+                        Fecha de la cita *
+                    </label>
+
+                    <input
+                        type="date"
+                        id="fecha"
+                        name="fecha"
+                        required>
+
+                </div>
+
+                <div class="citas-campo">
+
+                    <label for="hora">
+                        Hora *
+                    </label>
+
+                    <input
+                        type="time"
+                        id="hora"
+                        name="hora"
+                        required>
+
+                </div>
+
+                <div class="citas-campo">
+
+                    <label for="tipo">
+                        Tipo de consulta *
+                    </label>
+
+                    <select id="tipo" name="tipo" required>
+
+                        <option value="">
+                            Seleccionar
+                        </option>
+
+                        <option value="Primera consulta">
+                            Primera consulta
+                        </option>
+
+                        <option value="Seguimiento">
+                            Seguimiento
+                        </option>
+
+                        <option value="Control nutricional">
+                            Control nutricional
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="citas-campo completo">
+
+                    <label for="motivo">
+                        Motivo de consulta *
+                    </label>
+
+                    <textarea
+                        id="motivo"
+                        name="motivo"
+                        placeholder="Describe el motivo de la cita..."
+                        required></textarea>
+
+                </div>
+
+            </div>
+
+            <div class="citas-acciones">
+
+                <button
+                    class="btn-cita-guardar"
+                    type="submit"
+                    {% if not pacientes %}disabled{% endif %}>
+
+                    💾 Guardar cita
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+    <!-- TABLA DE CITAS -->
+
+    <section class="citas-card">
+
+        <h2>📋 Citas registradas</h2>
+
+        <div class="citas-tabla-wrap">
+
+            <table class="citas-tabla">
+
+                <thead>
+
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Tipo</th>
+                        <th>Motivo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for cita in citas %}
+
+                    <tr>
+
+                        <td>
+                            {{ cita.paciente_nombre }}
+                        </td>
+
+                        <td>
+                            {{ cita.fecha }}
+                        </td>
+
+                        <td>
+                            {{ cita.hora }}
+                        </td>
+
+                        <td>
+                            {{ cita.get('tipo', 'No especificado') }}
+                        </td>
+
+                        <td>
+                            {{ cita.motivo }}
+                        </td>
+
+                        <td>
+                            <span class="cita-estado">
+                                {{ cita.estado }}
+                            </span>
+                        </td>
+
+                        <td>
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'eliminar_cita',
+                                    cita_id=cita._id
+                                ) }}"
+                                onsubmit="return confirm(
+                                    '¿Seguro que deseas eliminar esta cita?'
+                                );">
+
+                                <button
+                                    type="submit"
+                                    class="btn-cita-eliminar">
+
+                                    Eliminar
+
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td colspan="7" class="citas-vacia">
+                            Todavía no hay citas registradas.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

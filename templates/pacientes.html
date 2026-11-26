@@ -1,0 +1,254 @@
+
+{% extends "base.html" %}
+
+{% block title %}Pacientes | NutriFit{% endblock %}
+
+{% block content %}
+
+<!-- ENCABEZADO -->
+
+<div class="page-header">
+
+    <div>
+
+        <h1>Mis pacientes</h1>
+
+        <p>
+            Administra y consulta la información de tus pacientes.
+        </p>
+
+    </div>
+
+    <a href="{{ url_for('nuevo_paciente') }}" class="btn">
+        + Registrar paciente
+    </a>
+
+</div>
+
+
+<!-- RESUMEN -->
+
+<div class="cards-container">
+
+    <div class="card">
+
+        <div class="card-icon">
+            👥
+        </div>
+
+        <h3>Pacientes registrados</h3>
+
+        <h2>{{ pacientes|length }}</h2>
+
+        <p style="font-size: 11px; color: #75847A; margin-top: 8px;">
+            Total de pacientes en tu consultorio.
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-icon">
+            🥑
+        </div>
+
+        <h3>Gestión nutricional</h3>
+
+        <h2 style="font-size: 21px;">
+            NutriFit
+        </h2>
+
+        <p style="font-size: 11px; color: #75847A; margin-top: 8px;">
+            Expedientes organizados y seguros.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- TABLA DE PACIENTES -->
+
+<div class="page-header">
+
+    <div>
+
+        <h2 style="font-size: 18px; color: #153D30;">
+            Directorio de pacientes
+        </h2>
+
+        <p>
+            Consulta los datos de tus pacientes registrados.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="table-container">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Nombre</th>
+
+                <th>Teléfono</th>
+
+                <th>Correo electrónico</th>
+
+                <th>Objetivo nutricional</th>
+
+                <th>Acciones</th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            {% for paciente in pacientes %}
+
+            <tr>
+
+                <td>
+
+                    <strong>
+                        {{ paciente.nombre }}
+                    </strong>
+
+                </td>
+
+
+                <td>
+                    {{ paciente.telefono or "No registrado" }}
+                </td>
+
+
+                <td>
+                    {{ paciente.email or "No registrado" }}
+                </td>
+
+
+                <td>
+                    {{ paciente.objetivo or "Sin especificar" }}
+                </td>
+
+
+                <td>
+
+                    <div style="
+                        display: flex;
+                        gap: 7px;
+                        flex-wrap: wrap;
+                    ">
+
+                        <a
+                            href="{{ url_for(
+                                'detalles_paciente',
+                                paciente_id=paciente._id
+                            ) }}"
+                            class="btn btn-small"
+                        >
+                            Ver
+                        </a>
+
+
+                        <a
+                            href="{{ url_for(
+                                'editar_paciente',
+                                paciente_id=paciente._id
+                            ) }}"
+                            class="btn btn-secondary btn-small"
+                        >
+                            Editar
+                        </a>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+
+                <td colspan="5" style="
+                    text-align: center;
+                    padding: 40px;
+                ">
+
+                    <div style="
+                        font-size: 35px;
+                        margin-bottom: 12px;
+                    ">
+                        👥
+                    </div>
+
+                    <strong>
+                        Todavía no tienes pacientes registrados.
+                    </strong>
+
+                    <p style="
+                        color: #75847A;
+                        margin-top: 10px;
+                    ">
+                        Comienza agregando tu primer paciente.
+                    </p>
+
+                    <a
+                        href="{{ url_for('nuevo_paciente') }}"
+                        class="btn"
+                        style="margin-top: 18px;"
+                    >
+                        + Registrar primer paciente
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<!-- INFORMACIÓN -->
+
+<div style="
+    background: #E5F3E9;
+    padding: 22px;
+    border-radius: 12px;
+    margin-top: 25px;
+">
+
+    <h3 style="
+        color: #153D30;
+        font-size: 15px;
+    ">
+        🥑 Administración de pacientes
+    </h3>
+
+    <p style="
+        color: #52705D;
+        font-size: 12px;
+        margin-top: 8px;
+    ">
+        Desde este apartado puedes consultar los expedientes,
+        actualizar los datos personales y revisar la información
+        nutricional de cada paciente.
+    </p>
+
+</div>
+
+{% endblock %}
+
